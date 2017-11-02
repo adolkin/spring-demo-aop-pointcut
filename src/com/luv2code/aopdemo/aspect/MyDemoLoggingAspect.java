@@ -9,20 +9,38 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyDemoLoggingAspect {
 	
-	// this is where we add all of our related advices for logging
-	
-	
-	// start with an @Before advice
-		
 	@Pointcut("execution(* com.luv2code.aopdemo.dao.*.*(..))")
 	private void forDaoPackage() {}
 	
-	@Before("forDaoPackage()")
+	// create pointcut for getter methods
+	@Pointcut("execution(* com.luv2code.aopdemo.dao.*.get*(..))")
+	private void getter() {}
+	
+	// create pointcut for setter methods
+	@Pointcut("execution(* com.luv2code.aopdemo.dao.*.set*(..))")
+	private void setter() {}
+	
+	// create point: include package ... exclude getter/setter
+	@Pointcut("forDaoPackage() && !(getter() || setter())")
+	private void forDaoPackageNoGetterSetter() {
+	}
+	
+//	@Before("forDaoPackage()")
+//	public void beforeAddAccountAdvuce() {
+//		System.out.println("\n=====>>> Executing @Before advice on method");
+//	}
+//	
+//	@Before("forDaoPackage()")
+//	public void performApiAnalytics() {
+//		System.out.println("\n=====>>> Performing API analytics");
+//	}
+	
+	@Before("forDaoPackageNoGetterSetter()")
 	public void beforeAddAccountAdvuce() {
 		System.out.println("\n=====>>> Executing @Before advice on method");
 	}
 	
-	@Before("forDaoPackage()")
+	@Before("forDaoPackageNoGetterSetter()")
 	public void performApiAnalytics() {
 		System.out.println("\n=====>>> Performing API analytics");
 	}
